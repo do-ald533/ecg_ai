@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  worker0:
+    image: ecg_image:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ecg_worker0
+    command: >
+      bash -c "torchrun --nproc_per_node=1
+      --nnodes=3 --node_rank=0
+      --master_addr=ecg_worker0 --master_port=12355
+      scripts/train_ddp.py"
+    volumes:
+      - ./processed_npz:/app/processed_npz
+      - ./scripts:/app/scripts
+      - ./logs:/app/logs
+    networks:
+      - ecg_net
+
+  worker1:
+    image: ecg_image:latest
+    container_name: ecg_worker1
+    command: >
+      bash -c "torchrun --nproc_per_node=1
+      --nnodes=3 --node_rank=1
+      --master_addr=ecg_worker0 --master_port=12355
+      scripts/train_ddp.py"
+    volumes:
+      - ./processed_npz:/app/processed_npz
+      - ./scripts:/app/scripts
+      - ./logs:/app/logs
+    networks:
+      - ecg_net
+
+  worker2:
+    image: ecg_image:latest
+    container_name: ecg_worker2
+    command: >
+      bash -c "torchrun --nproc_per_node=1
+      --nnodes=3 --node_rank=2
+      --master_addr=ecg_worker0 --master_port=12355
+      scripts/train_ddp.py"
+    volumes:
+      - ./processed_npz:/app/processed_npz
+      - ./scripts:/app/scripts
+      - ./logs:/app/logs
+    networks:
+      - ecg_net
+
+networks:
+  ecg_net:
+    driver: bridge

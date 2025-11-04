@@ -1,0 +1,65 @@
+# Diretórios de dados
+processed_parts/
+processed_npz/
+dataset/
+logs/
+notebooks/
+
+# Modelos treinados
+*.pt
+*.pth
+*.ckpt
+
+# Logs
+*.log
+*.out
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+
+# uv
+uv.lock
+.python-version
+
+# Ruff
+.ruff_cache/
+
+# Mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Arquivos temporários
+*.tmp
+*.bak
+*.swp
+*~
+
+# CSV de métricas
+*_metrics*.csv
+training_metrics*.csv
+
+# Checkpoints e runs
+checkpoints/
+runs/
+
+# Backups
+*.bak
+requirements.txt.bak
+
+# Docker (opcional - descomente se não usar)
+# Dockerfile
+# docker-compose.yml
+# docker-bake.hcl
+# .dockerignore

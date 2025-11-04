@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+*.log
+*.out
+*.pt
+*.csv
+*.npz
+processed_npz/train/*
+processed_npz/val/*
+processed_npz/test/*
+.git/
+.env

@@ -1,0 +1,139 @@
+[project]
+name = "ecgai"
+version = "2.0.0"
+description = "ECG Classification with Deep Learning"
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "MIT"}
+
+dependencies = [
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+    "torchaudio>=2.0.0",
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    "h5py>=3.8.0",
+    "scikit-learn>=1.3.0",
+    "tqdm>=4.65.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.1.0",
+    "mypy>=1.7.0",
+    "taskipy>=1.12.0",
+    "ipython>=8.12.0",
+    "jupyter>=1.0.0",
+]
+
+[project.scripts]
+ecgai = "main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+indent-width = 4
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "W",
+    "I",
+    "N",
+    "UP",
+    "ANN",
+    "B",
+    "A",
+    "COM",
+    "C4",
+    "DTZ",
+    "T10",
+    "EM",
+    "ISC",
+    "ICN",
+    "G",
+    "PIE",
+    "T20",
+    "PT",
+    "Q",
+    "RSE",
+    "RET",
+    "SIM",
+    "TID",
+    "ARG",
+    "PTH",
+    "PD",
+    "PL",
+    "NPY",
+    "PERF",
+    "RUF",
+]
+
+ignore = [
+    "ANN101",
+    "ANN102",
+    "ANN401",
+    "PLR0913",
+    "PLR2004",
+    "COM812",
+    "ISC001",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "F403"]
+"ecgai/config.py" = ["ANN003"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+strict_equality = true
+strict_concatenate = true
+
+[[tool.mypy.overrides]]
+module = [
+    "torch.*",
+    "torchvision.*",
+    "torchaudio.*",
+    "sklearn.*",
+    "tqdm.*",
+    "h5py.*",
+]
+ignore_missing_imports = true
+
+[tool.taskipy.tasks]
+format = "ruff format ."
+lint = "ruff check ."
+lint-fix = "ruff check --fix ."
+type-check = "mypy ecgai main.py"
+check = "task lint && task type-check"
+fix = "task lint-fix && task format"
+
+train = "python main.py train --config config.yaml"
+train-ddp = "torchrun --standalone --nproc_per_node=4 main.py train --config config.yaml"
+preprocess = "python main.py preprocess --data-dir dataset/unzipped --csv-path dataset/exams.csv"
+
+clean = "rm -rf __pycache__ **/__pycache__ .mypy_cache .ruff_cache checkpoints/*.pt *.log"
+clean-all = "task clean && rm -rf .venv uv.lock"

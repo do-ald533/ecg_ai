@@ -1,0 +1,57 @@
+# Configuração para Treinamento de ECG
+# Este arquivo permite ajustar hiperparâmetros sem modificar o código
+
+data:
+  data_dir: "processed_npz"
+  num_leads: 12
+  signal_length: 4096
+  use_mmap: true
+  use_fp16_io: true
+  labels:
+    - "1dAVb"
+    - "RBBB"
+    - "LBBB"
+    - "SB"
+    - "AF"
+    - "ST"
+    - "normal_ecg"
+
+training:
+  batch_size: 32
+  epochs: 50
+  learning_rate: 0.001
+  weight_decay: 0.0
+  patience: 7
+  eval_every: 5
+  gradient_clip: null
+  warmup_epochs: 0
+  use_amp: false
+  compile_model: false
+
+dataloader:
+  num_workers: null  # null = auto-detect
+  pin_memory: false
+  prefetch_factor: 2
+  persistent_workers: true
+
+distributed:
+  backend: "gloo"  # "gloo" para CPU, "nccl" para GPU
+  timeout_hours: 4.0
+  find_unused_parameters: false
+
+model:
+  dropout_rate: 0.3
+
+checkpoint:
+  save_dir: "checkpoints"
+  best_model_name: "best_model.pt"
+  last_model_name: "last_model.pt"
+  weights_name: "class_weights.pt"
+  metrics_csv: "training_metrics.csv"
+  save_last: true
+
+logging:
+  log_level: "INFO"
+  log_file: "train.log"
+  use_tensorboard: false
+  tensorboard_dir: "runs"
